@@ -24,11 +24,30 @@ class CheckoutFragment : Fragment() {
         _binding =FragmentCheckoutBinding.inflate(inflater, container, false)
         return binding.root
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         with(binding){
             val args: CheckoutFragmentArgs by navArgs()
             txtProductName.setText(args.productName)
+
+            btnDone.setOnClickListener {
+                findNavController().navigateUp()
+            }
+
+            edtAddress.setOnClickListener {
+                val action =
+                    CheckoutFragmentDirections.actionCheckoutFragmentToAddressFragment()
+                findNavController().navigate(action)
+            }
+
+            findNavController().currentBackStackEntry
+                ?.savedStateHandle?.let { handle ->
+                    handle.getLiveData<String>("address")
+                        .observe(viewLifecycleOwner) { res ->
+                            edtAddress.setText(res)
+                        }
+                }
 
             btnDone.setOnClickListener {
                 findNavController().navigateUp()
